@@ -8,9 +8,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV CONDA_DIR /opt/conda
 
 # Core installs
-RUN apt-get update && \
-    apt-get install -y git vim wget build-essential python-dev ca-certificates bzip2 libsm6 && \
-    apt-get clean
+RUN apt-get update && apt-get install -y git vim wget build-essential python-dev ca-certificates bzip2 libsm6 && apt-get clean
 
 # Install conda
 RUN echo 'export PATH=$CONDA_DIR/bin:$PATH' > /etc/profile.d/conda.sh && \
@@ -52,30 +50,20 @@ ENV PATH $PATH:$SPARK_HOME/bin
 RUN sed 's/log4j.rootCategory=INFO/log4j.rootCategory=ERROR/g' $SPARK_HOME/conf/log4j.properties.template > $SPARK_HOME/conf/log4j.properties
 ENV _JAVA_OPTIONS "-Xms512m -Xmx4g" 
 
-# Install useful Python packages
+# Install our Python packages
 RUN apt-get install -y libxrender1 fonts-dejavu && apt-get clean
 RUN conda create --yes -q -n python3.4-env python=3.4 nose numpy pandas scikit-learn scikit-image matplotlib scipy seaborn sympy cython patsy statsmodels cloudpickle numba bokeh pillow ipython jsonschema boto
 ENV PATH $CONDA_DIR/bin:$PATH
 RUN conda install --yes numpy pandas scikit-learn scikit-image matplotlib scipy seaborn sympy cython patsy statsmodels cloudpickle numba bokeh pillow && conda clean -yt
 RUN /bin/bash -c "pip install mistune"
-
-# Bolt setup
-RUN apt-get install -y git python-pip ipython gcc
-RUN git clone https://github.com/bolt-project/bolt
-RUN /bin/bash -c "pip install -r bolt/requirements.txt"
-ENV BOLT_ROOT $HOME/bolt
-ENV PATH $PATH:$BOLT_ROOT/bin
-ENV PYTHONPATH $PYTHONPATH:$BOLT_ROOT
+RUN /bin/bash -c "pip install word2vec"
 
 # Add the notebooks directory
-ADD notebooks $HOME/notebooks
+ADD notebooks $HOME/notebooks/spark-demo.ipynb
 
 # Add the data
 ADD data $HOME/data
  
-# Set up the kernelspec
-RUN /opt/conda/envs/python3.4-env/bin/ipython kernelspec install-self
-
 # Set permissions on the notebooks
 RUN chown -R freemanlab:freemanlab $HOME/notebooks
 

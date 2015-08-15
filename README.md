@@ -5,8 +5,8 @@ Uses data from The Museum of Modern Art (MoMA) Collection (github [repo](https:/
 ```
 momadm. (2015). collection: First release - revised. Zenodo. 10.5281/zenodo.21147
 ```
-To run using the docker image, setup Docker and call
+To run via the docker image, setup Docker then call
 
 ```
-docker run freemanlab/sparkmoma 
+docker run -i -t -p 8888:8888 freemanlab/sparkdemo
 ```
