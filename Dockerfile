@@ -59,7 +59,7 @@ RUN /bin/bash -c "pip install mistune"
 RUN /bin/bash -c "pip install word2vec"
 
 # Add the notebooks directory
-ADD notebooks $HOME/notebooks/spark-demo.ipynb
+ADD notebooks $HOME/notebooks
 
 # Add the data
 ADD data $HOME/data
@@ -73,9 +73,10 @@ USER freemanlab
 WORKDIR $HOME/notebooks
 
 # Setup Spark + IPython env vars
+ENV PYSPARK_SUBMIT_ARGS="--packages com.databricks:spark-csv_2.10:1.2.0"
 ENV PYSPARK_PYTHON=/opt/conda/bin/python
 ENV PYSPARK_DRIVER_PYTHON=/opt/conda/bin/python
 ENV IPYTHON 1
 ENV IPYTHON_OPTS "notebook --ip=0.0.0.0"
 
-CMD /bin/bash -c pyspark --packages com.databricks:spark-csv_2.10:1.2.0
+CMD /bin/bash -c 'pyspark --packages com.databricks:spark-csv_2.10:1.2.0'
